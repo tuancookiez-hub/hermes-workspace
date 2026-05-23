@@ -59,7 +59,9 @@ export function resolveHermesConfigPaths(): HermesConfigPaths {
   const hermesHome =
     process.env.HERMES_HOME ??
     process.env.CLAUDE_HOME ??
-    path.join(os.homedir(), '.hermes')
+    (process.platform === 'win32'
+      ? path.join(os.homedir(), 'AppData', 'Local', 'hermes')
+      : path.join(os.homedir(), '.hermes'))
   return {
     hermesHome,
     configPath: path.join(hermesHome, 'config.yaml'),
