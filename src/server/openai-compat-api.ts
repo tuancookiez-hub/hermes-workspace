@@ -19,7 +19,7 @@ import { CLAUDE_API } from './gateway-capabilities'
  * 3. Codex OAuth access token from `~/.codex/auth.json`
  */
 function getBearerToken(): string {
-  const fromEnv = process.env.HERMES_API_TOKEN || process.env.CLAUDE_API_TOKEN
+  const fromEnv = process.env.KIMI_API_KEY || process.env.HERMES_API_TOKEN || process.env.CLAUDE_API_TOKEN
   if (fromEnv) return fromEnv
 
   // Fall back to Codex OAuth token when no env var is set.

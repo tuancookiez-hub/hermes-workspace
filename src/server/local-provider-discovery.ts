@@ -49,6 +49,15 @@ const LOCAL_PROVIDERS: LocalProviderDef[] = [
     apiKey: 'atomic-chat',
     apiMode: 'chat_completions',
   },
+  {
+    id: 'kimi-coding',
+    name: 'Kimi',
+    port: 0,
+    modelsPath: '/v1/models',
+    baseUrl: 'https://api.kimi.com/coding/v1',
+    apiKey: process.env.KIMI_API_KEY || '',
+    apiMode: 'chat_completions',
+  },
 ]
 
 // -------------------------------------------------------------------
@@ -93,6 +102,28 @@ function cleanModelName(id: string): string {
 async function probeProvider(
   def: LocalProviderDef,
 ): Promise<DiscoveredProvider> {
+  // Remote providers (port=0) skip port probe — always online if apiKey is set
+  if (def.port === 0) {
+    const hasKey = def.apiKey && def.apiKey.length > 0 && def.apiKey !== 'ollama' && def.apiKey !== 'atomic-chat'
+    if (hasKey) {
+      // For Kimi, return known models without probing
+      if (def.id === 'kimi-coding') {
+        return {
+          def,
+          online: true,
+          models: [
+            { id: 'kimi-k2.6', name: 'Kimi K2.6', provider: 'kimi-coding', source: 'local-discovery' },
+            { id: 'kimi-k2.5', name: 'Kimi K2.5', provider: 'kimi-coding', source: 'local-discovery' },
+            { id: 'kimi-latest', name: 'Kimi Latest', provider: 'kimi-coding', source: 'local-discovery' },
+            { id: 'moonshot-v1-128k', name: 'Moonshot V1 128K', provider: 'kimi-coding', source: 'local-discovery' },
+          ],
+          lastProbe: Date.now(),
+        }
+      }
+    }
+    return { def, online: false, models: [], lastProbe: Date.now() }
+  }
+
   const url = `http://127.0.0.1:${def.port}${def.modelsPath}`
   try {
     const response = await fetch(url, {
