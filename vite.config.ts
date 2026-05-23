@@ -88,7 +88,7 @@ async function isClaudeAgentHealthy(port = 8642): Promise<boolean> {
 
 const config = defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const claudeApiUrl = env.CLAUDE_API_URL?.trim() || 'http://127.0.0.1:8642'
+  const claudeApiUrl = env.HERMES_API_URL?.trim() || env.CLAUDE_API_URL?.trim() || 'http://127.0.0.1:8642'
   // /api/connection-status is handled by the real route file at
   // src/routes/api/connection-status.ts; the dev server no longer
   // intercepts that path with a slim shortcut. See #285.
@@ -101,7 +101,7 @@ const config = defineConfig(({ mode, command }) => {
     if (claudeAgentStarted) return
     // Skip auto-start when CLAUDE_API_URL is explicitly set to a non-local endpoint
     const explicitUrl =
-      env.CLAUDE_API_URL || process.env.CLAUDE_API_URL || claudeApiUrl || ''
+      env.HERMES_API_URL || env.CLAUDE_API_URL || process.env.HERMES_API_URL || process.env.CLAUDE_API_URL || claudeApiUrl || ''
     if (
       explicitUrl &&
       explicitUrl !== 'http://127.0.0.1:8642' &&

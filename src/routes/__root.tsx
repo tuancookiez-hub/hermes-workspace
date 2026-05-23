@@ -253,12 +253,7 @@ export async function registerAppServiceWorker({
 function RootLayout() {
   const { settings } = useSettings()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
-  const isHermesWorldLandingRoute =
-    pathname === '/hermes-world' ||
-    pathname.startsWith('/hermes-world/') ||
-    pathname === '/world' ||
-    pathname.startsWith('/world/')
-  const isGameSurfaceRoute = isHermesWorldLandingRoute || pathname === '/playground' || pathname.startsWith('/playground/')
+  const isGameSurfaceRoute = false
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(
     null,
   )
@@ -369,11 +364,9 @@ function RootLayout() {
               <Outlet />
             </ErrorBoundary>
           </WorkspaceShell>
-          {!isHermesWorldLandingRoute ? <SearchModal /> : null}
-          {/* Keep UsageMeter mounted so search-modal OPEN_USAGE still works even when the pill is hidden by default. */}
           {!isGameSurfaceRoute ? <UsageMeter visible={settings.showUsageMeter} /> : null}
-          {!isHermesWorldLandingRoute ? <KeyboardShortcutsModal /> : null}
-          {!isHermesWorldLandingRoute ? <UpdateCenterNotifier /> : null}
+          <KeyboardShortcutsModal />
+          <UpdateCenterNotifier />
           {rootSurfaceState.showPostOnboardingOverlays && !isGameSurfaceRoute ? (
             <>
               <MobilePromptTrigger />
@@ -421,7 +414,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           dangerouslySetInnerHTML={{
             __html: wrapInlineScript(`
           (function(){
-            if (location.pathname === '/hermes-world' || location.pathname.indexOf('/hermes-world/') === 0 || location.pathname === '/world' || location.pathname.indexOf('/world/') === 0) return;
+            if (false) return;
             var d = document.getElementById('splash-screen');
             if (!d) return;
             var bg = '#031A1A', txt = '#F8F1E3', muted = '#9CB2AE', accent = '#FFAC02';
