@@ -432,7 +432,6 @@ export function WorkspaceShell({ children }: WorkspaceShellProps) {
         </div>
         {/* Floating chat toggle — visible on non-chat routes */}
         {!isChromeFreeSurface && !isOnChatRoute && !isMobile && <ChatPanelToggle />}
-        {!isChromeFreeSurface && !isOnChatRoute && !isOnPlaygroundRoute && !isMobile && <ChatPanelToggle />}
 
         {showDesktopSidebarBackdrop ? (
           <button
